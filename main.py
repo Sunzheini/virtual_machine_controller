@@ -9,7 +9,7 @@ class MainController:
         pass
 
     @staticmethod
-    def test_sequence():
+    def linux_test_sequence():
         machine_name = 'openSUSE'
         vbc = VBController()
 
@@ -35,6 +35,22 @@ class MainController:
 
         vbc.lock_session()
         time.sleep(5)
+        vbc.check_states()                  # Paused    / Locked
+
+        vbc.power_down()                    # close window
+        time.sleep(5)
+        vbc.check_states()                  # PoweredOff / Locked
+
+    def win_test_sequence(self):
+        machine_name = 'WinDev2305Eval'
+        vbc = VBController()
+
+        vbc.select_machine(machine_name)
+        time.sleep(1)
+        vbc.check_states()                  # PoweredOff / Unlocked
+
+        vbc.start_machine_in_window()       # starts the window
+        time.sleep(180)
         vbc.check_states()                  # Paused    / Locked
 
         vbc.power_down()                    # close window
