@@ -53,13 +53,27 @@ class MainController:
         time.sleep(180)
         vbc.check_states()                  # Paused    / Locked
 
-        vbc.power_down()                    # close window
-        time.sleep(5)
-        vbc.check_states()                  # PoweredOff / Locked
+        vbc.send_command("ipconfig")
+        time.sleep(30)
+
+        vbc.send_command("shutdown /s /t 0")
+        time.sleep(60)
+        #
+        # vbc.check_states()                  # Paused    / Locked
+        # vbc.power_down()                    # close window
+        # time.sleep(5)
+        # vbc.check_states()                  # PoweredOff / Locked
 
 
+# with gui
+# if __name__ == '__main__':
+#     mc = MainController()
+#
+#     professional_window = MyGui(mc)
+#     professional_window.start()
+
+
+# no gui
 if __name__ == '__main__':
     mc = MainController()
-
-    professional_window = MyGui(mc)
-    professional_window.start()
+    mc.win_test_sequence()

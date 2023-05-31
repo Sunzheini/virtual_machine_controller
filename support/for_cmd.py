@@ -3,7 +3,8 @@ import time
 vbox = virtualbox.VirtualBox()
 session = virtualbox.Session()
 print([m.name for m in vbox.machines])
-machine = vbox.find_machine('openSUSE')
+# machine = vbox.find_machine('openSUSE')
+machine = vbox.find_machine('WinDev2305Eval')
 print(machine.state)	# PoweredOff
 print(session.state)	# Unlocked
 
@@ -30,3 +31,8 @@ print(session.state)	# Locked
 
 
 session.console.power_down()    # closed window
+
+
+# ----------------------------
+session.console.keyboard.put_keys("ipconfig\n")
+
