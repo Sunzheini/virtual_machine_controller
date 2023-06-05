@@ -2,50 +2,49 @@ import tkinter as tk
 
 
 class MyGui:
-    def __init__(self, controller_object):
+    def __init__(self, controller_object, communicator_object):
         self.window = tk.Tk()
         self.window.title("VM Controller")
-        self.window.geometry("300x350")
+        self.window.geometry("300x900")
 
         self.controller_object = controller_object
 
-        self.label = tk.Label(self.window, text="Click to start linux test sequence", font=("Arial", 14))
-        self.label.pack(pady=10)
+        # ToDo: implement similar to VBController
+        self.communicator_object = communicator_object
 
-        self.button = tk.Button(self.window, text="Start", command=self.button_clicked, font=("Arial", 12))
-        self.button.pack(pady=5)
+        self.label_objects_list = []
+        self.button_objects_list = []
+        self.command_entry = None
 
-        self.label1 = tk.Label(self.window, text="Click to start win test sequence", font=("Arial", 14))
-        self.label1.pack(pady=30)
+        # get the names of the methods in the controller object
+        self.criteria = lambda meth: not meth.startswith('_') \
+                                     and type(getattr(self.controller_object, meth)) == \
+                                     type(self.controller_object.print_list_of_vms)
+        self.list_of_names = [str(meth) for meth in dir(self.controller_object) if self.criteria(meth)]
+        # create a label and button for each method
+        [self.create_label_and_button(function_name) for function_name in self.list_of_names]
 
-        self.button1 = tk.Button(self.window, text="Start", command=self.button_clicked1, font=("Arial", 12))
-        self.button1.pack(pady=5)
+    def create_label_and_button(self, function_name):
+        vm_function = getattr(self.controller_object, function_name)
 
-    def button_clicked(self):
-        self.label.config(text="Wait and don't touch...")
-        self.button.config(text="Running...")
-        self.button.config(state=tk.DISABLED)
-        self.window.update()
+        label = tk.Label(self.window, text=function_name, font=("Arial", 12))
+        label.pack(pady=5)
+        self.label_objects_list.append(label)
 
-        self.controller_object.linux_test_sequence()
+        if function_name == 'send_keyboard_command':
+            self.command_entry = tk.Entry(self.window, width=20, font=("Arial", 12))
+            self.command_entry.pack(pady=5)
+            button = tk.Button(self.window, text=">", command=self.send_command_from_entry, font=("Arial", 12))
+            button.pack(pady=10)
+        else:
+            button = tk.Button(self.window, text=">", command=vm_function, font=("Arial", 12))
+            button.pack(pady=10)
+            self.button_objects_list.append(button)
 
-        self.label.config(text="Click to start linux test sequence")
-        self.button.config(text="Start")
-        self.button.config(state=tk.NORMAL)
-        self.window.update()
-
-    def button_clicked1(self):
-        self.label1.config(text="Wait and don't touch...")
-        self.button1.config(text="Running...")
-        self.button1.config(state=tk.DISABLED)
-        self.window.update()
-
-        self.controller_object.win_test_sequence()
-
-        self.label1.config(text="Click to start win test sequence")
-        self.button1.config(text="Start")
-        self.button1.config(state=tk.NORMAL)
-        self.window.update()
+    def send_command_from_entry(self):
+        command = self.command_entry.get()
+        self.controller_object.send_keyboard_command(command)
+        self.command_entry.delete(0, tk.END)
 
     def start(self):
         self.window.mainloop()
