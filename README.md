@@ -18,7 +18,7 @@
 
 7. finished script0 as per the .pptx
 
-# (-- not done on festo pc --)
+# (-- not done on other pc --)
 8. install python v3.10.7 on virtual machine, update pip, flask
 9. install vs code and python extension
 9. add a delay of 1min for the cmd.exe in the scheduler
